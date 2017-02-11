@@ -50,6 +50,8 @@ namespace ConsoleApplication{
         public List<tildeVar> variables = new List<tildeVar>();
         private string currentString = "";
         private string lastCommand = "";
+        private int startDepth = 0;
+        private int depth = 0;
         private int readMode = 0;
         private List<string> arguments = new List<string>();
 
@@ -59,7 +61,9 @@ namespace ConsoleApplication{
 
         public void compileProgram(){
             currentString = "";
-            foreach (string line in lines){
+            for (int i = 0; i<lines.Length; i++){
+                string line = lines[i];
+                Console.WriteLine(line);
                 for (int j = 0; j<line.Length; j++){
                     char c = line[j];
                     string character = c.ToString();
@@ -77,16 +81,16 @@ namespace ConsoleApplication{
                                 continue;
                             }
                         } else if(character == "-"){
-                            if(line.Substring(j, 4) == "----"){
+                            if(j+4 < line.Length && line.Substring(j, 5) == "-----"){
+                                j += 4;
+                                depth -= 1;
+                                continue;
+                            } else if(j+3 < line.Length && line.Substring(j, 4) == "----"){
                                 j += 3;
                                 runCommand();
                                 currentString = "";
                                 lastCommand = "";
                                 continue;
-                            }
-                            if(nextCharacter == "~"){
-                                prepareCommand();
-                                currentString = "";
                             }
                             currentString += "-";
                         }
@@ -102,9 +106,35 @@ namespace ConsoleApplication{
                         } else if(character == "-"){
                             currentString += "-";
                         }
+                    } else if(readMode == 2){ //Go to end of section, (line.Substring(j, 9) == "---------") might need to be changed
+                        if(j == 0 && 3 < line.Length && line.Substring(j, 4) == "~~~-"){
+                            j += 3;
+                            depth+=1;
+                            continue;
+                        } else if(j+7 < line.Length && line.Substring(j, 8) == "----~~~-"){
+                            j += 7;
+                            depth+=1;
+                            continue;
+                        }  else if(5 == line.Length && line.Substring(j, 5) == "-----"){
+                            j += 4;
+                            depth-=1;
+                            if(depth==startDepth){
+                                readMode = 0;
+                            }
+                            continue;
+                        } else if(j+8 < line.Length && line.Substring(j, 9) == "---------"){
+                            j = line.IndexOf("~", j);
+                            if(j == -1){
+                                j = line.Length-1;
+                            }
+                            depth-=1;
+                            if(depth==startDepth){
+                                readMode = 0;
+                            }
+                            continue;
+                        }
                     }
                 }
-                Console.Write("\n");
             }
         }
 
@@ -114,6 +144,9 @@ namespace ConsoleApplication{
                 readMode = 1;
                 arguments.Clear();
             } else if(currentString == "~~"){ //Numeric operation +,-,*,/ : arg1=mode, arg2=var1, arg3=var2/number
+                readMode = 1;
+                arguments.Clear();
+            } else if(currentString == "~~~"){ //If : arg1=mode, arg2=var1, arg3=var2
                 readMode = 1;
                 arguments.Clear();
             } else if(currentString == "~~~~~"){ //Print as int or char : arg1=mode, arg2=var
@@ -129,6 +162,11 @@ namespace ConsoleApplication{
                     readMode = 0;
                 }
             } else if(lastCommand == "~~"){
+                arguments.Add(currentString);
+                if(arguments.Count == 3){
+                    readMode = 0;
+                }
+            } else if(lastCommand == "~~~"){
                 arguments.Add(currentString);
                 if(arguments.Count == 3){
                     readMode = 0;
@@ -177,6 +215,65 @@ namespace ConsoleApplication{
                     } else if(arg0 == "~-~~~~"){
                         v1.value = v1.value/tildeVar.getTildeValue(arguments[2]);
                     } 
+                }
+            } else if(lastCommand == "~~~"){
+                if(arguments.Count == 3){
+                    tildeVar v1 = variables.Find(x => x.name.Equals(arguments[1]));
+                    string arg0 = arguments[0];
+                    if(arg0 == "~"){
+                        tildeVar v2 = variables.Find(x => x.name.Equals(arguments[2]));
+                        if(v1.value<v2.value){
+                            depth+=1;
+                        } else{
+                            readMode = 2; startDepth = depth; depth+=1;
+                        }
+                    } else if(arg0 == "~~"){
+                        tildeVar v2 = variables.Find(x => x.name.Equals(arguments[2]));
+                        if(v1.value==v2.value){
+                            depth+=1;
+                        } else{
+                            readMode = 2; startDepth = depth; depth+=1;
+                        }
+                    } else if(arg0 == "~~~"){
+                        tildeVar v2 = variables.Find(x => x.name.Equals(arguments[2]));
+                        if(v1.value>v2.value){
+                            depth+=1;
+                        } else{
+                            readMode = 2; startDepth = depth; depth+=1;
+                        }
+                    } else if(arg0 == "~~~~"){
+                        tildeVar v2 = variables.Find(x => x.name.Equals(arguments[2]));
+                        if(v1.value!=v2.value){
+                            depth+=1;
+                        } else{
+                            readMode = 2; startDepth = depth; depth+=1;
+                        }
+                    } else if(arg0 == "~-~"){
+                        if(v1.value<tildeVar.getTildeValue(arguments[2])){
+                            depth+=1;
+                        } else{
+                            readMode = 2; startDepth = depth; depth+=1;
+                        }
+                    } else if(arg0 == "~-~~"){
+                        int a = tildeVar.getTildeValue(arguments[2]);
+                        if(v1.value==tildeVar.getTildeValue(arguments[2])){
+                            depth+=1;
+                        } else{
+                            readMode = 2; startDepth = depth; depth+=1;
+                        }
+                    } else if(arg0 == "~-~~~"){
+                        if(v1.value>tildeVar.getTildeValue(arguments[2])){
+                            depth+=1;
+                        } else{
+                            readMode = 2; startDepth = depth; depth+=1;
+                        }
+                    } else if(arg0 == "~-~~~~"){
+                        if(v1.value!=tildeVar.getTildeValue(arguments[2])){
+                            depth+=1;
+                        } else{
+                            readMode = 2; startDepth = depth; depth+=1;
+                        }
+                    }
                 }
             } else if(lastCommand == "~~~~~"){
                 if(arguments.Count == 2){
