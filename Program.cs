@@ -9,17 +9,39 @@ namespace ConsoleApplication{
             var inputText = File.ReadAllLines(path);
             tildeProgram prog = new tildeProgram(inputText);
             prog.compileProgram();
-            Console.WriteLine("\nHi.");
         }
     }
 
     public class tildeVar{
-        string name = "";
-        string tildeValue = "";
-        int value = 0;
+        public string name = "";
+        public string tildeVal = "";
+        private int val = 0;
         public tildeVar(string name, string tildeValue){
             this.name = name;
-            this.tildeValue = tildeValue;
+            this.tildeVal = tildeValue;
+            this.val = getTildeValue(tildeValue);
+        }
+        public int value{
+            get{return this.val;}
+            set{
+                this.val = value;
+                this.tildeVal = intToTilde(val);
+            }
+        }
+        public string tildeValue{
+            get{return this.tildeVal;}
+            set{
+                this.tildeVal = value;
+                this.val = getTildeValue(tildeVal);
+            }
+        }
+
+        public static int getTildeValue(string tildeValue){
+            tildeValue = tildeValue.Replace("~","1").Replace("-","0");
+            return Convert.ToInt32(tildeValue, 2);
+        }
+        public static string intToTilde(int tildeValue){
+            return Convert.ToString(tildeValue, 2).Replace("1","~").Replace("0","-");
         }
     }
 
@@ -29,9 +51,7 @@ namespace ConsoleApplication{
         private string currentString = "";
         private string lastCommand = "";
         private int readMode = 0;
-
-        private string varName = "";
-        private string varVal = "";
+        private List<string> arguments = new List<string>();
 
         public tildeProgram(string[] lines){
             this.lines = lines;
@@ -51,7 +71,7 @@ namespace ConsoleApplication{
                         if(character == "~"){
                             currentString += "~";
                             if(line.Substring(j+1, 2) == "--"){
-                                interpretCommand();
+                                prepareCommand();
                                 currentString = "";
                                 j += 2;
                                 continue;
@@ -65,7 +85,7 @@ namespace ConsoleApplication{
                                 continue;
                             }
                             if(nextCharacter == "~"){
-                                interpretCommand();
+                                prepareCommand();
                                 currentString = "";
                             }
                             currentString += "-";
@@ -88,21 +108,34 @@ namespace ConsoleApplication{
             }
         }
 
-        public void interpretCommand(){
+        public void prepareCommand(){
             lastCommand = currentString;
-            if(currentString == "~"){
+            if(currentString == "~"){ //Creates variable : arg1=name, arg2=value
                 readMode = 1;
-                varName = "";
-                varVal = "";
+                arguments.Clear();
+            } else if(currentString == "~~"){ //Numeric operation +,-,*,/ : arg1=mode, arg2=var1, arg3=var2/number
+                readMode = 1;
+                arguments.Clear();
+            } else if(currentString == "~~~~~"){ //Print as int or char : arg1=mode, arg2=var
+                readMode = 1;
+                arguments.Clear();
             }
         }
 
         public void interpretString(){
             if(lastCommand == "~"){
-                if(varName == ""){
-                    varName = currentString;
-                } else if(varVal == ""){
-                    varVal = currentString;
+                arguments.Add(currentString);
+                if(arguments.Count == 2){
+                    readMode = 0;
+                }
+            } else if(lastCommand == "~~"){
+                arguments.Add(currentString);
+                if(arguments.Count == 3){
+                    readMode = 0;
+                }
+            } else if(lastCommand == "~~~~~"){
+                arguments.Add(currentString);
+                if(arguments.Count == 2){
                     readMode = 0;
                 }
             }
@@ -110,10 +143,52 @@ namespace ConsoleApplication{
 
         public void runCommand(){
             if(lastCommand == "~"){
-                if(varName != "" && varVal != ""){
-                    variables.Add(new tildeVar(varName, varVal));
+                if(arguments.Count == 2){
+                    tildeVar v = variables.Find(x => x.name.Equals(arguments[0]));
+                    if(v!=null){
+                        v.tildeValue = arguments[1];
+                    } else{
+                        variables.Add(new tildeVar(arguments[0], arguments[1]));
+                    }
                     readMode = 0;
-                    currentString = "";
+                }
+            } else if(lastCommand == "~~"){
+                if(arguments.Count == 3){
+                    tildeVar v1 = variables.Find(x => x.name.Equals(arguments[1]));
+                    string arg0 = arguments[0];
+                    if(arg0 == "~"){
+                        tildeVar v2 = variables.Find(x => x.name.Equals(arguments[2]));
+                        v1.value = v1.value+v2.value;
+                    } else if(arg0 == "~~"){
+                        tildeVar v2 = variables.Find(x => x.name.Equals(arguments[2]));
+                        v1.value = v1.value-v2.value;
+                    } else if(arg0 == "~~~"){
+                        tildeVar v2 = variables.Find(x => x.name.Equals(arguments[2]));
+                        v1.value = v1.value*v2.value;
+                    } else if(arg0 == "~~~~"){
+                        tildeVar v2 = variables.Find(x => x.name.Equals(arguments[2]));
+                        v1.value = v1.value/v2.value;
+                    } else if(arg0 == "~-~"){
+                        v1.value = v1.value+tildeVar.getTildeValue(arguments[2]);
+                    } else if(arg0 == "~-~~"){
+                        v1.value = v1.value-tildeVar.getTildeValue(arguments[2]);
+                    } else if(arg0 == "~-~~~"){
+                        v1.value = v1.value*tildeVar.getTildeValue(arguments[2]);
+                    } else if(arg0 == "~-~~~~"){
+                        v1.value = v1.value/tildeVar.getTildeValue(arguments[2]);
+                    } 
+                }
+            } else if(lastCommand == "~~~~~"){
+                if(arguments.Count == 2){
+                    tildeVar v = variables.Find(x => x.name.Equals(arguments[1]));
+                    string arg0 = arguments[0];
+                    if(arg0 == "~"){
+                        Console.WriteLine(v.value);
+                    } else if(arg0 == "~~"){
+                        Console.WriteLine((char) v.value);
+                    } else if(arg0 == "~~~"){
+                        Console.WriteLine(v.tildeValue);
+                    } 
                 }
             }
         }

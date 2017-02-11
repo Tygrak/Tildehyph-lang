@@ -6,15 +6,15 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v1.1": {
-      "~-~ Esolang/1.0.0": {
+      "Tildehyph-lang/1.0.0": {
         "runtime": {
-          "~-~ Esolang.dll": {}
+          "Tildehyph-lang.dll": {}
         }
       }
     }
   },
   "libraries": {
-    "~-~ Esolang/1.0.0": {
+    "Tildehyph-lang/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
