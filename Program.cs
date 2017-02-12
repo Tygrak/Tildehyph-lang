@@ -5,14 +5,13 @@ using System.Collections.Generic;
 namespace ConsoleApplication{
     public class Program{
         public static void Main(string[] args){
-            string path = Directory.GetCurrentDirectory()+"\\toCompile.txt";
+            string path = Directory.GetCurrentDirectory()+"\\vocprosil.~-";
             if(args.Length > 0){
-                for (int i = 0; i < args.Length; i++){
-                    Console.WriteLine(args[i]);
-                }
+                Console.WriteLine(args[0]);
                 path = Directory.GetCurrentDirectory()+"\\"+args[0];
             }
-            var inputText = File.ReadAllLines(path);
+            path = Directory.GetCurrentDirectory()+"\\vocprosil.~-";
+            string[] inputText = File.ReadAllLines(path);
             tildeProgram prog = new tildeProgram(inputText);
             prog.compileProgram();
         }
@@ -60,8 +59,10 @@ namespace ConsoleApplication{
         private int startDepth = 0;
         private int depth = 0;
         private int readMode = 0;
+        private int printMode = 1;
         private int i = 0;
         private int j = 0;
+        private int jToSet = 0;
         private List<string> arguments = new List<string>();
 
         public tildeProgram(string[] lines){
@@ -73,8 +74,13 @@ namespace ConsoleApplication{
             for (i = 0; i<lines.Length; i++){
                 string line = lines[i];
                 line = line.Split(new string[] {"//"}, StringSplitOptions.None)[0];
+                line = line.Replace(" ", "");
                 //Console.WriteLine(line);
                 for (j = 0; j<line.Length; j++){
+                    if(jToSet>0){
+                        j = jToSet;
+                        jToSet = 0;
+                    }
                     char c = line[j];
                     string character = c.ToString();
                     string nextCharacter = "";
@@ -91,12 +97,12 @@ namespace ConsoleApplication{
                                 continue;
                             }
                         } else if(character == "-"){
-                            if(j+4 < line.Length && line.Substring(j, 5) == "-----"){
+                            if(j+4 < line.Length && lastCommand == "" && line.Substring(j, 5) == "-----"){
                                 j += 4;
                                 depth -= 1;
                                 if(loops.Count != 0 && loops[loops.Count-1][2] == depth){
                                     i = loops[loops.Count-1][0]-1;
-                                    j = loops[loops.Count-1][1];
+                                    jToSet = loops[loops.Count-1][1];
                                     break;
                                 }
                                 continue;
@@ -126,22 +132,30 @@ namespace ConsoleApplication{
                             j += 3;
                             depth+=1;
                             continue;
-                        } else if(j+7 < line.Length && line.Substring(j, 8) == "----~~~-"){
-                            j += 7;
+                        } else if(j+3 < line.Length && j-4 > -1 && line.Substring(j-4, 8) == "----~~~-"){
+                            j += 3;
                             depth+=1;
                             continue;
-                        }  else if(5 == line.Length && line.Substring(j, 5) == "-----"){
+                        } else if(j == 0 && 4 < line.Length && line.Substring(j, 5) == "~~~~-"){
+                            j += 4;
+                            depth+=1;
+                            continue;
+                        } else if(j+4 < line.Length && j-4 > -1 && line.Substring(j-4, 9) == "----~~~~-"){
+                            j += 4;
+                            depth+=1;
+                            continue;
+                        } else if(5 == line.Length && line.Substring(j, 5) == "-----"){
                             j += 4;
                             depth-=1;
                             if(depth==startDepth){
                                 readMode = 0;
                             }
                             continue;
-                        } else if(j+8 < line.Length && line.Substring(j, 9) == "---------"){
-                            j = line.IndexOf("~", j);
-                            if(j == -1){
-                                j = line.Length-1;
-                            }
+                        } else if(j+7 < line.Length && line.Substring(j, 8) == "~-------"){
+                            j += 7;
+                            continue;
+                        } else if(j+4 < line.Length && line.Substring(j, 5) == "-----"){
+                            j += 4;
                             depth-=1;
                             if(depth==startDepth){
                                 readMode = 0;
@@ -174,6 +188,9 @@ namespace ConsoleApplication{
             } else if(currentString == "~~~~~"){ //Print as int or char : arg1=mode, arg2=var
                 readMode = 1;
                 arguments.Clear();
+            } else if(currentString == "~~~~~~~~"){ //Set print mode : arg1=mode
+                readMode = 1;
+                arguments.Clear();
             }
         }
 
@@ -201,6 +218,11 @@ namespace ConsoleApplication{
             } else if(lastCommand == "~~~~~"){
                 arguments.Add(currentString);
                 if(arguments.Count == 2){
+                    readMode = 0;
+                }
+            } else if(lastCommand == "~~~~~~~~"){
+                arguments.Add(currentString);
+                if(arguments.Count == 1){
                     readMode = 0;
                 }
             }
@@ -365,12 +387,33 @@ namespace ConsoleApplication{
                     tildeVar v = variables.Find(x => x.name.Equals(arguments[1]));
                     string arg0 = arguments[0];
                     if(arg0 == "~"){
-                        Console.WriteLine(v.value);
+                        if(printMode == 1){
+                            Console.WriteLine(v.value);
+                        } else if(printMode == 2){
+                            Console.Write(v.value);
+                        }
                     } else if(arg0 == "~~"){
-                        Console.WriteLine((char) v.value);
+                        if(printMode == 1){
+                            Console.WriteLine((char) v.value);
+                        } else if(printMode == 2){
+                            Console.Write((char) v.value);
+                        }
                     } else if(arg0 == "~~~"){
-                        Console.WriteLine(v.tildeValue);
+                        if(printMode == 1){
+                            Console.WriteLine(v.tildeValue);
+                        } else if(printMode == 2){
+                            Console.Write(v.tildeValue);
+                        }
                     } 
+                }
+            } else if(lastCommand == "~~~~~~~~"){
+                if(arguments.Count == 1){
+                    string arg0 = arguments[0];
+                    if(arg0 == "~"){
+                        printMode = 1;
+                    } else if(arg0 == "~~"){
+                        printMode = 2;
+                    }
                 }
             }
         }
