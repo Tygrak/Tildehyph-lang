@@ -10,7 +10,7 @@ namespace ConsoleApplication{
                 Console.WriteLine(args[0]);
                 path = Directory.GetCurrentDirectory()+"\\"+args[0];
             }
-            path = Directory.GetCurrentDirectory()+"\\vocprosil.~-";
+            path = Directory.GetCurrentDirectory()+"\\bottles.~-";
             string[] inputText = File.ReadAllLines(path);
             tildeProgram prog = new tildeProgram(inputText);
             prog.compileProgram();
@@ -37,7 +37,7 @@ namespace ConsoleApplication{
             return Convert.ToString(value, 2).Replace("1","~").Replace("0","-");
         }
         public static List<tildeVar> tildeToList(string tildeValue){
-            string[] tildes = tildeValue.Split(new string[] {"---"}, StringSplitOptions.None);
+            string[] tildes = tildeValue.Split(new string[] {"--"}, StringSplitOptions.None);
             List<tildeVar> tildeList = new List<tildeVar>();
             for (int i = 0; i < tildes.Length; i++){
                 tildeList.Add(new tildeInt(null, tildes[i]));
@@ -56,7 +56,7 @@ namespace ConsoleApplication{
             for (int i = 0; i < tildeArray.Length; i++){
                 tildeVar a = tildeArray[i];
                 if(a is tildeInt){
-                    tildeValue += tildeArray[i].tildeValue + "---";
+                    tildeValue += tildeArray[i].tildeValue + "--";
                 }
             }
             return tildeValue;
@@ -168,6 +168,10 @@ namespace ConsoleApplication{
         public tildeVar findTildeVar(string name){
             tildeVar tilde = variables.Find(x => x.name.Equals(name));
             return tilde;
+        }
+        public int findTildeVarIndex(string name){
+            int id = variables.FindIndex(x => x.name.Equals(name));
+            return id;
         }
 
         public tildeInt findTildeInt(string name){
@@ -291,10 +295,13 @@ namespace ConsoleApplication{
             if(currentString == "~"){ //Creates variable : arg1=name, arg2=value
                 readMode = 1;
                 arguments.Clear();
-            } else if(currentString == "~-~"){ //Creates variable list : arg1=name, arg2=value
+            } else if(currentString == "~~-~"){ //Creates variable list : arg1=mode, arg2=name, arg3=value
                 readMode = 1;
                 arguments.Clear();
             } else if(currentString == "~~"){ //Numeric operation +,-,*,/ : arg1=mode, arg2=var1, arg3=var2/number
+                readMode = 1;
+                arguments.Clear();
+            } else if(currentString == "~~-~~"){ //Array numeric operation +,-,*,/ : arg1=mode, arg2=var1, arg3=var list, arg4=list index
                 readMode = 1;
                 arguments.Clear();
             } else if(currentString == "~~~"){ //If : arg1=mode, arg2=var1, arg3=var2
@@ -325,14 +332,19 @@ namespace ConsoleApplication{
                 if(arguments.Count == 2){
                     readMode = 0;
                 }
-            } else if(lastCommand == "~-~"){
+            } else if(lastCommand == "~~-~"){
                 arguments.Add(currentString);
-                if(arguments.Count == 2){
+                if(arguments.Count == 3){
                     readMode = 0;
                 }
             } else if(lastCommand == "~~"){
                 arguments.Add(currentString);
                 if(arguments.Count == 3){
+                    readMode = 0;
+                }
+            } else if(lastCommand == "~~-~~"){
+                arguments.Add(currentString);
+                if(arguments.Count == 4){
                     readMode = 0;
                 }
             } else if(lastCommand == "~~~"){
@@ -372,17 +384,27 @@ namespace ConsoleApplication{
                     } else{
                         variables.Add(new tildeInt(arguments[0], arguments[1]));
                     }
-                    readMode = 0;
                 }
-            } else if(lastCommand == "~-~"){
-                if(arguments.Count == 2){
-                    tildeList v = findTildeList(arguments[0]);
-                    if(v!=null){
-                        v.tildeValue = arguments[1];
-                    } else{
-                        variables.Add(new tildeList(arguments[0], arguments[1]));
+            } else if(lastCommand == "~~-~"){
+                if(arguments.Count == 3){
+                    tildeList v1 = findTildeList(arguments[1]);
+                    string arg0 = arguments[0];
+                    if(arg0 == "~"){
+                        if(v1!=null){
+                            v1.tildeValue = arguments[2];
+                        } else{
+                            variables.Add(new tildeList(arguments[1], arguments[2]));
+                        }
+                    } else if(arg0 == "~~"){
+                        tildeVar v2 = findTildeVar(arguments[2]);
+                        if(v2 is tildeInt){
+                            v1.Add((tildeInt) v2);
+                        } else if(v2 is tildeList){
+                            v1.Add((tildeList) v2);
+                        }
+                    } else if(arg0 == "~-~~"){
+                        v1.Add(new tildeInt(arguments[1], arguments[2]));
                     }
-                    readMode = 0;
                 }
             } else if(lastCommand == "~~"){
                 if(arguments.Count == 3){
@@ -421,6 +443,57 @@ namespace ConsoleApplication{
                     } else if(arg0 == "~-~~~~~"){
                         v1.value = v1.value%tildeInt.tildeToInt(arguments[2]);
                     } 
+                }
+            } else if(lastCommand == "~~-~~"){
+                if(arguments.Count == 4){
+                    tildeInt v1 = findTildeInt(arguments[1]);
+                    tildeInt v3 = findTildeInt(arguments[3]);
+                    string arg0 = arguments[0];
+                    if(arg0 == "~"){
+                        tildeList v2 = findTildeList(arguments[2]);
+                        v1.value = v1.value+((tildeInt) v2[v3.value]).value;
+                    } else if(arg0 == "~~"){
+                        tildeList v2 = findTildeList(arguments[2]);
+                        v1.value = v1.value-((tildeInt) v2[v3.value]).value;
+                    } else if(arg0 == "~~~"){
+                        tildeList v2 = findTildeList(arguments[2]);
+                        v1.value = v1.value*((tildeInt) v2[v3.value]).value;
+                    } else if(arg0 == "~~~~"){
+                        tildeList v2 = findTildeList(arguments[2]);
+                        v1.value = v1.value/((tildeInt) v2[v3.value]).value;
+                    } else if(arg0 == "~~~~~"){
+                        tildeList v2 = findTildeList(arguments[2]);
+                        v1.value = v1.value%((tildeInt) v2[v3.value]).value;
+                    } else if(arg0 == "~~~~~~"){
+                        tildeList v2 = findTildeList(arguments[2]);
+                        if(v1 == null){
+                            variables.Add(new tildeInt(arguments[1], ((tildeInt) v2[v3.value]).tildeValue));
+                        } else{
+                            string name = v1.name;
+                            int id1 = findTildeVarIndex(arguments[1]);
+                            tildeVar a2 = findTildeList(arguments[2])[v3.value];
+                            variables[id1] = a2;
+                            variables[id1].name = name;
+                        }
+                    } else if(arg0 == "~-~"){
+                        tildeList v2 = findTildeList(arguments[2]);
+                        ((tildeInt) v2[v3.value]).value += v1.value;
+                    } else if(arg0 == "~-~~"){
+                        tildeList v2 = findTildeList(arguments[2]);
+                        ((tildeInt) v2[v3.value]).value -= v1.value;
+                    } else if(arg0 == "~-~~~"){
+                        tildeList v2 = findTildeList(arguments[2]);
+                        ((tildeInt) v2[v3.value]).value *= v1.value;
+                    } else if(arg0 == "~-~~~~"){
+                        tildeList v2 = findTildeList(arguments[2]);
+                        ((tildeInt) v2[v3.value]).value /= v1.value;
+                    } else if(arg0 == "~-~~~~~"){
+                        tildeList v2 = findTildeList(arguments[2]);
+                        ((tildeInt) v2[v3.value]).value %= v1.value;
+                    } else if(arg0 == "~-~~~~~~"){
+                        tildeList v2 = findTildeList(arguments[2]);
+                        ((tildeInt) v2[v3.value]).value = v1.value;
+                    }
                 }
             } else if(lastCommand == "~~~"){
                 if(arguments.Count == 3){
