@@ -10,7 +10,7 @@ namespace ConsoleApplication{
                 Console.WriteLine(args[0]);
                 path = Directory.GetCurrentDirectory()+"\\"+args[0];
             }
-            path = Directory.GetCurrentDirectory()+"\\vocprosil.~-";
+            path = Directory.GetCurrentDirectory()+"\\cat.~-";
             string[] inputText = File.ReadAllLines(path);
             tildeProgram prog = new tildeProgram(inputText);
             prog.compileProgram();
@@ -188,6 +188,9 @@ namespace ConsoleApplication{
             } else if(currentString == "~~~~~"){ //Print as int or char : arg1=mode, arg2=var
                 readMode = 1;
                 arguments.Clear();
+            } else if(currentString == "~~~~~~"){ //Input int, char or tildeValue : arg1=mode, arg2=var
+                readMode = 1;
+                arguments.Clear();
             } else if(currentString == "~~~~~~~~"){ //Set print mode : arg1=mode
                 readMode = 1;
                 arguments.Clear();
@@ -216,6 +219,11 @@ namespace ConsoleApplication{
                     readMode = 0;
                 }
             } else if(lastCommand == "~~~~~"){
+                arguments.Add(currentString);
+                if(arguments.Count == 2){
+                    readMode = 0;
+                }
+            } else if(lastCommand == "~~~~~~"){
                 arguments.Add(currentString);
                 if(arguments.Count == 2){
                     readMode = 0;
@@ -260,7 +268,11 @@ namespace ConsoleApplication{
                         v1.value = v1.value%v2.value;
                     } else if(arg0 == "~~~~~~"){
                         tildeVar v2 = variables.Find(x => x.name.Equals(arguments[2]));
-                        v1.value = v2.value;
+                        if(v1 == null){
+                            variables.Add(new tildeVar(arguments[1], v2.tildeValue));
+                        } else{
+                            v1.value = v2.value;
+                        }
                     } else if(arg0 == "~-~"){
                         v1.value = v1.value+tildeVar.getTildeValue(arguments[2]);
                     } else if(arg0 == "~-~~"){
@@ -349,6 +361,13 @@ namespace ConsoleApplication{
                             readMode = 2; startDepth = depth; depth+=1; loops.RemoveAt(loops.Count-1);
                         }
                     } else if(arg0 == "~~"){
+                        tildeVar v2 = variables.Find(x => x.name.Equals(arguments[2]));
+                        if(v1.value==v2.value){
+                            depth+=1;
+                        } else{
+                            readMode = 2; startDepth = depth; depth+=1; loops.RemoveAt(loops.Count-1);
+                        }
+                    } else if(arg0 == "~~~"){
                         if(loops[loops.Count-1][3] == 1){
                             v1.value += 1;
                         }
@@ -370,11 +389,16 @@ namespace ConsoleApplication{
                             readMode = 2; startDepth = depth; depth+=1; loops.RemoveAt(loops.Count-1);
                         }
                     } else if(arg0 == "~-~~"){
+                        if(v1.value==tildeVar.getTildeValue(arguments[2])){
+                            depth+=1;
+                        } else{
+                            readMode = 2; startDepth = depth; depth+=1; loops.RemoveAt(loops.Count-1);
+                        }
+                    } else if(arg0 == "~-~~~"){
                         if(loops[loops.Count-1][3] == 1){
                             v1.value += 1;
                         }
                         v1.value -= 1;
-                        int a = tildeVar.getTildeValue(arguments[2]);
                         if(v1.value>tildeVar.getTildeValue(arguments[2])){
                             depth+=1;
                         } else{
@@ -403,6 +427,35 @@ namespace ConsoleApplication{
                             Console.WriteLine(v.tildeValue);
                         } else if(printMode == 2){
                             Console.Write(v.tildeValue);
+                        }
+                    } 
+                }
+            } else if(lastCommand == "~~~~~~"){
+                if(arguments.Count == 2){
+                    tildeVar v = variables.Find(x => x.name.Equals(arguments[1]));
+                    string arg0 = arguments[0];
+                    if(arg0 == "~"){
+                        int inInt;
+                        if(int.TryParse(Console.ReadLine(), out inInt)){
+                            if(v != null){
+                                v.value = inInt;
+                            } else{
+                                variables.Add(new tildeVar(arguments[1], tildeVar.intToTilde(inInt)));
+                            }
+                        }
+                    } else if(arg0 == "~~"){
+                        char inChar = (char) Console.Read();
+                        if(v != null){
+                            v.value = inChar;
+                        } else{
+                            variables.Add(new tildeVar(arguments[1], tildeVar.intToTilde(inChar)));
+                        }
+                    } else if(arg0 == "~~~"){
+                        string inString = Console.ReadLine();
+                        if(v != null){
+                            v.tildeValue = inString;
+                        } else{
+                            variables.Add(new tildeVar(arguments[1], inString));
                         }
                     } 
                 }
