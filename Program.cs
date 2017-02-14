@@ -699,7 +699,37 @@ namespace ConsoleApplication{
                                 Console.Write(((tildeList) v).tildeValue);
                             }
                         }
-                    } 
+                    } else if(arg0 == "~~~~~"){
+                        if(printMode == 1){
+                            if(v is tildeInt){
+                                if(((tildeInt) v).value > 0){
+                                    Console.WriteLine("true");
+                                } else if(((tildeInt) v).value == 0){
+                                    Console.WriteLine("false");
+                                }
+                            } else if(v is tildeList){
+                                if(((tildeList) v).value > 0){
+                                    Console.WriteLine("true");
+                                } else if(((tildeList) v).value == 0){
+                                    Console.WriteLine("false");
+                                }
+                            }
+                        } else if(printMode == 2){
+                            if(v is tildeInt){
+                                if(((tildeInt) v).value > 0){
+                                    Console.Write("true");
+                                } else if(((tildeInt) v).value == 0){
+                                    Console.Write("false");
+                                }
+                            } else if(v is tildeList){
+                                if(((tildeList) v).value > 0){
+                                    Console.Write("true");
+                                } else if(((tildeList) v).value == 0){
+                                    Console.Write("false");
+                                }
+                            }
+                        }
+                    }
                 }
             } else if(lastCommand == "~~~~~~"){
                 if(arguments.Count == 2){
@@ -748,7 +778,19 @@ namespace ConsoleApplication{
                         } else{
                             variables.Add(new tildeList(arguments[1], tildeList.stringToList(inString)));
                         }
-                    } 
+                    } else if(arg0 == "~~~~~"){
+                        string inString = Console.ReadLine();
+                        int a = inString == "true" ? 1 : inString == "false" ? 0 : -1;
+                        if(v is tildeInt){
+                            tildeInt l = (tildeInt) v;
+                            l.value = a;
+                        } else if(v is tildeList){
+                            tildeList l = (tildeList) v;
+                            l.Add(new tildeInt(null, a));
+                        } else{
+                            variables.Add(new tildeInt(arguments[1], a));
+                        }
+                    }
                 }
             } else if(lastCommand == "~~~~~~~~"){
                 if(arguments.Count == 1){

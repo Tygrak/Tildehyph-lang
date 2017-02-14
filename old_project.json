@@ -4,12 +4,12 @@
     "debugType": "portable",
     "emitEntryPoint": true
   },
-  "dependencies": {},
+  "dependencies": {"NETStandard.Library": "1.5.0-rc2-24027"},
   "frameworks": {
     "netcoreapp1.1": {
       "dependencies": {
         "Microsoft.NETCore.App": {
-          //"type": "platform",
+          "type": "platform",
           "version": "1.1.0"
         }
       },
@@ -17,7 +17,7 @@
     }
   },
   "runtimes": {
-    "win7-x64": {},
-    "win10-x64": {}
+    "win7-x64-aot": {"#import": [ "win7-aot", "win7-x64" ]},
+    "win10-x86-aot": {"#import": [ "win10-aot", "win10-x86", "win81-x86-aot" ]}
   }
 }
