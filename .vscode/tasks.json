@@ -15,9 +15,10 @@
         {
             "taskName": "run",
             "args": [
+                "test.~-",
                 "vocprosil.~-",
                 "helloworld.~-",
-                "toCompile.txt"
+                "bottles.~-"
             ],
             "isTestCommand": true,
             "problemMatcher": "$msCompile"

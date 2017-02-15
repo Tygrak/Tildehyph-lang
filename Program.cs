@@ -7,13 +7,21 @@ namespace ConsoleApplication{
         public static void Main(string[] args){
             string path = Directory.GetCurrentDirectory()+"\\vocprosil.~-";
             if(args.Length > 0){
-                Console.WriteLine(args[0]);
-                path = Directory.GetCurrentDirectory()+"\\"+args[0];
+                if(args[0].Contains(":")){
+                    path = args[0];
+                } else{
+                    path = Directory.GetCurrentDirectory()+"\\"+args[0];
+                }
             } else{
                 Console.WriteLine("Choose file to run: ");
-                path = Directory.GetCurrentDirectory()+"\\"+Console.ReadLine();
+                string line = Console.ReadLine();
+                if(line.Contains(":")){
+                    path = line;
+                } else{
+                    path = Directory.GetCurrentDirectory()+"\\"+line;
+                }
             }
-            //path = Directory.GetCurrentDirectory()+"\\bottles.~-";
+            //path = Directory.GetCurrentDirectory()+"\\test.~-";
             string[] inputText = File.ReadAllLines(path);
             tildeProgram prog = new tildeProgram(inputText);
             prog.compileProgram();
@@ -156,6 +164,7 @@ namespace ConsoleApplication{
 
     public class tildeProgram{
         public string[] lines;
+        private string line = "";
         public List<tildeVar> variables = new List<tildeVar>();
         public List<int[]> loops = new List<int[]>();
         private string currentString = "";
@@ -203,9 +212,9 @@ namespace ConsoleApplication{
         public void compileProgram(){
             currentString = "";
             for (i = 0; i<lines.Length; i++){
-                string line = lines[i];
+                line = lines[i];
                 line = line.Split(new string[] {"//"}, StringSplitOptions.None)[0];
-                line = line.Replace(" ", "");
+                line = line.Replace(" ", "").Replace("\t", "");
                 //Console.WriteLine(line);
                 for (j = 0; j<line.Length; j++){
                     if(jToSet>0){
@@ -214,6 +223,14 @@ namespace ConsoleApplication{
                     }
                     char c = line[j];
                     string character = c.ToString();
+                    if(character != "~" && character != "-"){
+                        Console.WriteLine("Error at line "+(i+1).ToString()+", char "+(j+1).ToString());
+                        Console.WriteLine("Non tildehyph character found.");
+                        Console.WriteLine("Invalid character: " + character);
+                        i = lines.Length;
+                        j = line.Length;
+                        return;
+                    }
                     string nextCharacter = "";
                     if(j+1<line.Length){
                         nextCharacter = line[j+1].ToString();
@@ -221,7 +238,15 @@ namespace ConsoleApplication{
                     if(readMode == 0){
                         if(character == "~"){
                             currentString += "~";
-                            if(line.Substring(j+1, 2) == "--"){
+                            if(lastCommand != ""){
+                                Console.WriteLine("Error at line "+(i+1).ToString()+", char "+(j+1).ToString());
+                                Console.WriteLine("Trying to call another command when the last one wasnt yet run. Do you have too many arguments?");
+                                Console.WriteLine("Last command: " + lastCommand);
+                                i = lines.Length;
+                                j = line.Length;
+                                return;
+                            }
+                            if(j+3 < line.Length && line.Substring(j+1, 2) == "--"){
                                 prepareCommand();
                                 currentString = "";
                                 j += 2;
@@ -331,6 +356,12 @@ namespace ConsoleApplication{
             } else if(currentString == "~~~~~~~~"){ //Set print mode : arg1=mode
                 readMode = 1;
                 arguments.Clear();
+            } else{
+                Console.WriteLine("Error at line "+(i+1).ToString()+", char "+(j+1).ToString());
+                Console.WriteLine("Unknown command: " + currentString);
+                i = lines.Length;
+                j = line.Length;
+                return;
             }
         }
 
@@ -384,6 +415,13 @@ namespace ConsoleApplication{
         }
 
         public void runCommand(){
+            if(arguments[0].StartsWith("-") || (arguments.Count > 1 && arguments[1].StartsWith("-")) || (arguments.Count > 2 && arguments[2].StartsWith("-"))){
+                Console.WriteLine("Error at line "+(i+1).ToString()+", char "+(j+1).ToString());
+                Console.WriteLine("Argument begins with a '-', did you miscount your hyphens?");
+                i = lines.Length;
+                j = line.Length;
+                return;
+            }
             if(lastCommand == "~"){
                 if(arguments.Count == 2){
                     tildeInt v = findTildeInt(arguments[0]);
@@ -617,6 +655,13 @@ namespace ConsoleApplication{
                             readMode = 2; startDepth = depth; depth+=1; loops.RemoveAt(loops.Count-1);
                         }
                     } else if(arg0 == "~~~~"){
+                        tildeInt v2 = findTildeInt(arguments[2]);
+                        if(v1.value!=v2.value){
+                            depth+=1;
+                        } else{
+                            readMode = 2; startDepth = depth; depth+=1; loops.RemoveAt(loops.Count-1);
+                        }
+                    } else if(arg0 == "~~~~~"){
                         tildeList v2 = findTildeList(arguments[2]);
                         int id = loops[loops.Count-1][3];
                         v1.value = v2[id-1].value;
@@ -647,6 +692,12 @@ namespace ConsoleApplication{
                         }
                         v1.value -= 1;
                         if(v1.value>tildeInt.tildeToInt(arguments[2])){
+                            depth+=1;
+                        } else{
+                            readMode = 2; startDepth = depth; depth+=1; loops.RemoveAt(loops.Count-1);
+                        }
+                    } else if(arg0 == "~-~~~~"){
+                        if(v1.value!=tildeInt.tildeToInt(arguments[2])){
                             depth+=1;
                         } else{
                             readMode = 2; startDepth = depth; depth+=1; loops.RemoveAt(loops.Count-1);
