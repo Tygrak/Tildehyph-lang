@@ -32,88 +32,88 @@ The command is ended by 4 hyphens. For example `~--~---~-------` sets variable "
 Creates a tildeInt variable with the chosen name and value. If the variable already exists instead set it to the value.
 ## ~~
 Mathematical operation.  
-**~**:Sets var1 to var1+var2.  
-**~-~**:Sets var1 to var1+number.  
-**~~**:Sets var1 to var1-var2.  
-**~-~~**:Sets var1 to var1-number.  
-**~~~**:Sets var1 to var1*var2.  
-**~-~~~**:Sets var1 to var1*number.  
-**~~~~**:Sets var1 to var1/var2.  
-**~-~~~~**:Sets var1 to var1/number.  
-**~~~~~**:Sets var1 to var1%var2.  
-**~-~~~~~**:Sets var1 to var1%number.  
-**~~~~~~**:Copies var2 to var1.  
+**~** : Sets var1 to var1+var2.  
+**~-~** : Sets var1 to var1+number.  
+**~~** : Sets var1 to var1-var2.  
+**~-~~** : Sets var1 to var1-number.  
+**~~~** : Sets var1 to var1\*var2.  
+**~-~~~** : Sets var1 to var1\*number.  
+**~~~~** : Sets var1 to var1/var2.  
+**~-~~~~** : Sets var1 to var1/number.  
+**~~~~~** : Sets var1 to var1%var2.  
+**~-~~~~~** : Sets var1 to var1%number.  
+**~~~~~~** : Copies var2 to var1.  
 ## ~~~
 If statement.  
-**~**:If var1<\var2.  
-**~-~**:If var1<\number.  
-**~~**:If var1==var2.  
-**~-~~**:If var1==number.  
-**~~~**:If var1>var2.  
-**~-~~~**:If var1>number.  
-**~~~~**:If var1!=var2.  
-**~-~~~~**:If var1!=number.  
+**~** : If var1<var2.  
+**~-~** : If var1<number.  
+**~~** : If var1==var2.  
+**~-~~** : If var1==number.  
+**~~~** : If var1>var2.  
+**~-~~~** : If var1>number.  
+**~~~~** : If var1!=var2.  
+**~-~~~~** : If var1!=number.  
 ## ~~~~
 For/while loop. Repeats block until the condition isnt met.
-**~**:For as long as var1<\var2 increment var1 by 1.  
-**~-~**:For as long as var1<\number increment var1 by 1.  
-**~~**:While var1==var2.  
-**~-~~**:While var1==number.  
-**~~~**:For as long as var1>var2 decrease var1 by 1.  
-**~-~~~**:For as long as var1>var2 decrease var1 by 1.  
-**~~~~**:While var1!=var2.  
-**~-~~~~**:While var1!=number.  
-**~~~~~**:For each item in list var2, set var1 to the item.  
+**~** : For as long as var1<var2 increment var1 by 1.  
+**~-~** : For as long as var1<number increment var1 by 1.  
+**~~** : While var1==var2.  
+**~-~~** : While var1==number.  
+**~~~** : For as long as var1>var2 decrease var1 by 1.  
+**~-~~~** : For as long as var1>var2 decrease var1 by 1.  
+**~~~~** : While var1!=var2.  
+**~-~~~~** : While var1!=number.  
+**~~~~~** : For each item in list var2, set var1 to the item.  
 ## ~~~~~
 Print variable.
-**~**:Print variable as int, if the variable is a list print the sum of the items.  
-**~~**:Print variable as char, if the variable is a list print the list items as a string.  
-**~~~**:Print variable as a tildeValue.  
-**~~~~~**:Prints true if var is higher or equal to 1, Prints false if var is equal to 0.  
-**~~~~~~**:Waits for 0.1 * variable value, then clear the console.  
+**~** : Print variable as int, if the variable is a list print the sum of the items.  
+**~~** : Print variable as char, if the variable is a list print the list items as a string.  
+**~~~** : Print variable as a tildeValue.  
+**~~~~~** : Prints true if var is higher or equal to 1, Prints false if var is equal to 0.  
+**~~~~~~** : Waits for 0.1 * variable value, then clear the console.  
 ## ~~~~~~
 Input into variable.
-**~**:Inputs a int from stdin, if the variable is a list add the int to the list.  
-**~~**:Inputs the value of a char from stdin, if the variable is a list add the char to the list.  
-**~~~**:Inputs a tildeValue from stdin, if the variable is a list add the tildeValue to the list.  
-**~~~~**:Inputs values of characters from a string from stdin to a list.  
-**~~~~~**:Inputs a boolean from stdin to a tildeInt or tildeList, if the input is the string "true" or a 1 set the value to 1, if the input is the string "false" or a 0 set the value to 0.  
+**~** : Inputs a int from stdin, if the variable is a list add the int to the list.  
+**~~** : Inputs the value of a char from stdin, if the variable is a list add the char to the list.  
+**~~~** : Inputs a tildeValue from stdin, if the variable is a list add the tildeValue to the list.  
+**~~~~** : Inputs values of characters from a string from stdin to a list.  
+**~~~~~** : Inputs a boolean from stdin to a tildeInt or tildeList, if the input is the string "true" or a 1 set the value to 1, if the input is the string "false" or a 0 set the value to 0.  
 ## ~~-~
 TildeList operation.  
-**~**:Creates list with items initialized from argument 2. The initialization values have to be seperated by two hyphens. If the list already exists instead set it to the items.  
-**~-~**:Creates a blank list.  
-**~~**:Add var2 into the list.  
-**~-~~**:Add a number into the list.  
-**~~~**:Copies items from list var2 into the first list.  
-**~~~~**:Removes from list at index equal to var2.  
-**~-~~~~**:Removes from list at index equal to the arg2 number.  
+**~** : Creates list with items initialized from argument 2. The initialization values have to be seperated by two hyphens. If the list already exists instead set it to the items.  
+**~-~** : Creates a blank list.  
+**~~** : Add var2 into the list.  
+**~-~~** : Add a number into the list.  
+**~~~** : Copies items from list var2 into the first list.  
+**~~~~** : Removes from list at index equal to var2.  
+**~-~~~~** : Removes from list at index equal to the arg2 number.  
 ## ~~-~
 TildeList operation.  
-**~**:Creates list with items initialized from argument 2. The initialization values have to be seperated by two hyphens. If the list already exists instead set it to the items.  
-**~-~**:Creates a blank list.  
-**~~**:Add var2 into the list.  
-**~-~~**:Add a number into the list.  
-**~~~**:Copies items from list var2 into the first list.  
-**~~~~**:Removes from list at index equal to var2.  
-**~-~~~~**:Removes from list at index equal to the arg2 number.  
+**~** : Creates list with items initialized from argument 2. The initialization values have to be seperated by two hyphens. If the list already exists instead set it to the items.  
+**~-~** : Creates a blank list.  
+**~~** : Add var2 into the list.  
+**~-~~** : Add a number into the list.  
+**~~~** : Copies items from list var2 into the first list.  
+**~~~~** : Removes from list at index equal to var2.  
+**~-~~~~** : Removes from list at index equal to the arg2 number.  
 ## ~~-~~
 Mathematical operation.  
-**~**:Sets var1 to var1+list[index].  
-**~-~**:Sets list[index] to list[index]+var1.  
-**~~**:Sets var1 to var1-list[index].  
-**~-~~**:Sets list[index] to list[index]-var1.  
-**~~~**:Sets var1 to var1*list[index].  
-**~-~~~**:Sets list[index] to list[index]*var1.  
-**~~~~**:Sets var1 to var1/list[index].  
-**~-~~~~**:Sets list[index] to list[index]/var1.  
-**~~~~~**:Sets var1 to var1%list[index].  
-**~-~~~~~**:Sets list[index] to list[index]%var1.  
-**~~~~~~**:Copies list[index] into var1.  
-**~-~~~~~~**:Copies var1 into list[index]. 
+**~** : Sets var1 to var1+list[index].  
+**~-~** : Sets list[index] to list[index]+var1.  
+**~~** : Sets var1 to var1-list[index].  
+**~-~~** : Sets list[index] to list[index]-var1.  
+**~~~** : Sets var1 to var1\*list[index].  
+**~-~~~** : Sets list[index] to list[index]\*var1.  
+**~~~~** : Sets var1 to var1/list[index].  
+**~-~~~~** : Sets list[index] to list[index]/var1.  
+**~~~~~** : Sets var1 to var1%list[index].  
+**~-~~~~~** : Sets list[index] to list[index]%var1.  
+**~~~~~~** : Copies list[index] into var1.  
+**~-~~~~~~** : Copies var1 into list[index]. 
 ## ~~~~~~~~
-Sets print mode.
-**~**:Print now prints on seperate lines. This is the default mode.  
-**~~**:Print now doesnt use newlines.  
+Sets print mode.  
+**~** : Print now prints on seperate lines. This is the default mode.  
+**~~** : Print now doesnt use newlines.  
 
 # Comments
 Some commands create the variable for you if it doesnt exist - for example when copying a variable with `~~--~~~~~~` or with a ~~~~ loop.  
