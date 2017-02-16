@@ -463,9 +463,11 @@ namespace ConsoleApplication{
                         }
                     } else if(arg0 == "~~~~"){
                         tildeInt v2 = findTildeInt(arguments[2]);
-                       v1.items.RemoveAt(v2.value);
+                        v1.items.RemoveAt(v2.value);
                     } else if(arg0 == "~-~~~~"){
-                       v1.items.RemoveAt(tildeInt.tildeToInt(arguments[2]));
+                        v1.items.RemoveAt(tildeInt.tildeToInt(arguments[2]));
+                    } else{
+                        modeDoesntExistException();
                     }
                 }
             } else if(lastCommand == "~~"){
@@ -504,30 +506,34 @@ namespace ConsoleApplication{
                         v1.value = v1.value/tildeInt.tildeToInt(arguments[2]);
                     } else if(arg0 == "~-~~~~~"){
                         v1.value = v1.value%tildeInt.tildeToInt(arguments[2]);
-                    } 
+                    } else{
+                        modeDoesntExistException();
+                    }
                 }
             } else if(lastCommand == "~~-~~"){
                 if(arguments.Count == 4){
                     tildeInt v1 = findTildeInt(arguments[1]);
+                    tildeList v2 = findTildeList(arguments[2]);
+                    if(v2 == null){
+                        Console.WriteLine("Error at line "+(i+1).ToString()+", char "+(j+1).ToString());
+                        Console.WriteLine("The list "+arguments[2]+" doesnt exist.");
+                        i = lines.Length;
+                        j = line.Length;
+                        return;
+                    }
                     tildeInt v3 = findTildeInt(arguments[3]);
                     string arg0 = arguments[0];
                     if(arg0 == "~"){
-                        tildeList v2 = findTildeList(arguments[2]);
                         v1.value = v1.value+((tildeInt) v2[v3.value]).value;
                     } else if(arg0 == "~~"){
-                        tildeList v2 = findTildeList(arguments[2]);
                         v1.value = v1.value-((tildeInt) v2[v3.value]).value;
                     } else if(arg0 == "~~~"){
-                        tildeList v2 = findTildeList(arguments[2]);
                         v1.value = v1.value*((tildeInt) v2[v3.value]).value;
                     } else if(arg0 == "~~~~"){
-                        tildeList v2 = findTildeList(arguments[2]);
                         v1.value = v1.value/((tildeInt) v2[v3.value]).value;
                     } else if(arg0 == "~~~~~"){
-                        tildeList v2 = findTildeList(arguments[2]);
                         v1.value = v1.value%((tildeInt) v2[v3.value]).value;
                     } else if(arg0 == "~~~~~~"){
-                        tildeList v2 = findTildeList(arguments[2]);
                         if(v1 == null){
                             variables.Add(new tildeInt(arguments[1], ((tildeInt) v2[v3.value]).tildeValue));
                         } else{
@@ -538,23 +544,19 @@ namespace ConsoleApplication{
                             variables[id1].name = name;
                         }
                     } else if(arg0 == "~-~"){
-                        tildeList v2 = findTildeList(arguments[2]);
                         ((tildeInt) v2[v3.value]).value += v1.value;
                     } else if(arg0 == "~-~~"){
-                        tildeList v2 = findTildeList(arguments[2]);
                         ((tildeInt) v2[v3.value]).value -= v1.value;
                     } else if(arg0 == "~-~~~"){
-                        tildeList v2 = findTildeList(arguments[2]);
                         ((tildeInt) v2[v3.value]).value *= v1.value;
                     } else if(arg0 == "~-~~~~"){
-                        tildeList v2 = findTildeList(arguments[2]);
                         ((tildeInt) v2[v3.value]).value /= v1.value;
                     } else if(arg0 == "~-~~~~~"){
-                        tildeList v2 = findTildeList(arguments[2]);
                         ((tildeInt) v2[v3.value]).value %= v1.value;
                     } else if(arg0 == "~-~~~~~~"){
-                        tildeList v2 = findTildeList(arguments[2]);
                         ((tildeInt) v2[v3.value]).value = v1.value;
+                    } else{
+                        modeDoesntExistException();
                     }
                 }
             } else if(lastCommand == "~~~"){
@@ -614,6 +616,8 @@ namespace ConsoleApplication{
                         } else{
                             readMode = 2; startDepth = depth; depth+=1;
                         }
+                    } else{
+                        modeDoesntExistException();
                     }
                 }
             } else if(lastCommand == "~~~~"){
@@ -702,11 +706,20 @@ namespace ConsoleApplication{
                         } else{
                             readMode = 2; startDepth = depth; depth+=1; loops.RemoveAt(loops.Count-1);
                         }
+                    } else{
+                        modeDoesntExistException();
                     }
                 }
             } else if(lastCommand == "~~~~~"){
                 if(arguments.Count == 2){
                     tildeVar v = findTildeVar(arguments[1]);
+                    if(v == null){
+                        Console.WriteLine("Error at line "+(i+1).ToString()+", char "+(j+1).ToString());
+                        Console.WriteLine("The variable "+arguments[1]+" doesnt exist.");
+                        i = lines.Length;
+                        j = line.Length;
+                        return;
+                    }
                     string arg0 = arguments[0];
                     if(arg0 == "~"){
                         if(printMode == 1){
@@ -780,6 +793,14 @@ namespace ConsoleApplication{
                                 }
                             }
                         }
+                    }  else if(arg0 == "~~~~~~"){
+                        System.Threading.Thread.Sleep(tildeInt.tildeToInt(arguments[1]) * 100);
+                        try{
+                            Console.Clear();
+                        } catch{
+                        }
+                    } else{
+                        modeDoesntExistException();
                     }
                 }
             } else if(lastCommand == "~~~~~~"){
@@ -831,7 +852,7 @@ namespace ConsoleApplication{
                         }
                     } else if(arg0 == "~~~~~"){
                         string inString = Console.ReadLine();
-                        int a = inString == "true" ? 1 : inString == "false" ? 0 : -1;
+                        int a = inString == "true" || inString == "1" ? 1 : inString == "false" || inString == "0" ? 0 : -1;
                         if(v is tildeInt){
                             tildeInt l = (tildeInt) v;
                             l.value = a;
@@ -841,6 +862,8 @@ namespace ConsoleApplication{
                         } else{
                             variables.Add(new tildeInt(arguments[1], a));
                         }
+                    } else{
+                        modeDoesntExistException();
                     }
                 }
             } else if(lastCommand == "~~~~~~~~"){
@@ -850,9 +873,18 @@ namespace ConsoleApplication{
                         printMode = 1;
                     } else if(arg0 == "~~"){
                         printMode = 2;
+                    } else{
+                        modeDoesntExistException();
                     }
                 }
             }
+        }
+
+        public void modeDoesntExistException(){
+            Console.WriteLine("Error at line "+(i+1).ToString()+", char "+(j+1).ToString());
+            Console.WriteLine("The command "+lastCommand+" doesnt have a mode "+arguments[0]+".");
+            i = lines.Length;
+            j = line.Length;
         }
     }
 }
