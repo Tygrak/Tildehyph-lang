@@ -20,7 +20,7 @@ The command is ended by 4 hyphens. For example `~--~---~-------` sets variable "
 | ~ | 2 (name, value) | Create a new tildeInt variable. |
 | ~~-~ | 3 (mode, name, value) | TildeList operation. |
 | ~~ | 3 (mode, var1, number/var2) | Mathematic operation. |
-| ~~-~~ | 4 (mode, tildeInt, tildeList, list index) | TildeList mathematic operation. |
+| \~~-\~~ | 4 (mode, tildeInt, tildeList, list index) | TildeList mathematic operation. |
 | ~~~ | 3 (mode, var1, number/var2) | If. |
 | ~~~~ | 3 (mode, var1, number/var2) | For/While. |
 | ~~~~~ | 2 (mode, var) | Print. |
@@ -37,16 +37,19 @@ Mathematical operation.
 **~~** : Sets var1 to var1-var2.  
 **~-~~** : Sets var1 to var1-number.  
 **~~~** : Sets var1 to var1\*var2.  
+**~~-~~~** : Sets var1 to its power of var2.  
 **~-~~~** : Sets var1 to var1\*number.  
+**~-~~-~~~** : Sets var1 to its power of number.  
 **~~~~** : Sets var1 to var1/var2.  
+**~~-~~~~** : Sets var1 to its square root. The additional argument is useless but cant be omitted.  
 **~-~~~~** : Sets var1 to var1/number.  
 **~~~~~** : Sets var1 to var1%var2.  
 **~-~~~~~** : Sets var1 to var1%number.  
 **~~~~~~** : Copies var2 to var1.  
 ## ~~~
 If statement.  
-**~** : If var1<var2.  
-**~-~** : If var1<number.  
+**~** : If var1\<var2.  
+**~-~** : If var1\<number.  
 **~~** : If var1==var2.  
 **~-~~** : If var1==number.  
 **~~~** : If var1>var2.  
@@ -54,9 +57,9 @@ If statement.
 **~~~~** : If var1!=var2.  
 **~-~~~~** : If var1!=number.  
 ## ~~~~
-For/while loop. Repeats block until the condition isnt met.
-**~** : For as long as var1<var2 increment var1 by 1.  
-**~-~** : For as long as var1<number increment var1 by 1.  
+For/while loop. Repeats block until the condition isnt met.  
+**~** : For as long as var1\<var2 increment var1 by 1.  
+**~-~** : For as long as var1\<number increment var1 by 1.  
 **~~** : While var1==var2.  
 **~-~~** : While var1==number.  
 **~~~** : For as long as var1>var2 decrease var1 by 1.  
@@ -65,14 +68,14 @@ For/while loop. Repeats block until the condition isnt met.
 **~-~~~~** : While var1!=number.  
 **~~~~~** : For each item in list var2, set var1 to the item.  
 ## ~~~~~
-Print variable.
+Print variable.  
 **~** : Print variable as int, if the variable is a list print the sum of the items.  
 **~~** : Print variable as char, if the variable is a list print the list items as a string.  
 **~~~** : Print variable as a tildeValue.  
 **~~~~~** : Prints true if var is higher or equal to 1, Prints false if var is equal to 0.  
 **~~~~~~** : Waits for 0.1 * variable value, then clear the console.  
 ## ~~~~~~
-Input into variable.
+Input into variable.  
 **~** : Inputs a int from stdin, if the variable is a list add the int to the list.  
 **~~** : Inputs the value of a char from stdin, if the variable is a list add the char to the list.  
 **~~~** : Inputs a tildeValue from stdin, if the variable is a list add the tildeValue to the list.  
@@ -81,22 +84,25 @@ Input into variable.
 ## ~~-~
 TildeList operation.  
 **~** : Creates list with items initialized from argument 2. The initialization values have to be seperated by two hyphens. If the list already exists instead set it to the items.  
-**~-~** : Creates a blank list.  
+**~-~** : Creates a blank list. The additional argument is useless but cant be omitted.  
 **~~** : Add var2 into the list.  
 **~-~~** : Add a number into the list.  
 **~~~** : Copies items from list var2 into the first list.  
 **~~~~** : Removes from list at index equal to var2.  
 **~-~~~~** : Removes from list at index equal to the arg2 number.  
 ## \~~-\~~
-Mathematical operation.  
+TildeList mathematical operation.  
 **~** : Sets var1 to var1+list[index].  
 **~-~** : Sets list[index] to list[index]+var1.  
 **~~** : Sets var1 to var1-list[index].  
 **~-~~** : Sets list[index] to list[index]-var1.  
 **~~~** : Sets var1 to var1\*list[index].  
+**~~-~~~** : Sets var1 to its power of list[index].  
 **~-~~~** : Sets list[index] to list[index]\*var1.  
+**~-~~-~~~** : Sets list[index] to its power of var1.  
 **~~~~** : Sets var1 to var1/list[index].  
 **~-~~~~** : Sets list[index] to list[index]/var1.  
+**~-~~-~~~~** : Sets list[index] to its square root. The var1 argument is useless but cant be omitted.  
 **~~~~~** : Sets var1 to var1%list[index].  
 **~-~~~~~** : Sets list[index] to list[index]%var1.  
 **~~~~~~** : Copies list[index] into var1.  

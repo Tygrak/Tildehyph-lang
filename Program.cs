@@ -483,9 +483,15 @@ namespace ConsoleApplication{
                     } else if(arg0 == "~~~"){
                         tildeInt v2 = findTildeInt(arguments[2]);
                         v1.value = v1.value*v2.value;
+                    } else if(arg0 == "~~-~~~"){
+                        tildeInt v2 = findTildeInt(arguments[2]);
+                        v1.value = (int) Math.Pow(v1.value, v2.value);
                     } else if(arg0 == "~~~~"){
                         tildeInt v2 = findTildeInt(arguments[2]);
                         v1.value = v1.value/v2.value;
+                    } else if(arg0 == "~~-~~~~"){
+                        tildeInt v2 = findTildeInt(arguments[2]);
+                        v1.value = (int) Math.Sqrt(v1.value);
                     } else if(arg0 == "~~~~~"){
                         tildeInt v2 = findTildeInt(arguments[2]);
                         v1.value = v1.value%v2.value;
@@ -502,6 +508,9 @@ namespace ConsoleApplication{
                         v1.value = v1.value-tildeInt.tildeToInt(arguments[2]);
                     } else if(arg0 == "~-~~~"){
                         v1.value = v1.value*tildeInt.tildeToInt(arguments[2]);
+                    } else if(arg0 == "~-~~-~~~"){
+                        tildeInt v2 = findTildeInt(arguments[2]);
+                        v1.value = (int) Math.Pow(v1.value, tildeInt.tildeToInt(arguments[2]));
                     } else if(arg0 == "~-~~~~"){
                         v1.value = v1.value/tildeInt.tildeToInt(arguments[2]);
                     } else if(arg0 == "~-~~~~~"){
@@ -529,6 +538,8 @@ namespace ConsoleApplication{
                         v1.value = v1.value-((tildeInt) v2[v3.value]).value;
                     } else if(arg0 == "~~~"){
                         v1.value = v1.value*((tildeInt) v2[v3.value]).value;
+                    } else if(arg0 == "~~-~~~"){
+                        v1.value = (int) Math.Pow(v1.value, ((tildeInt) v2[v3.value]).value);
                     } else if(arg0 == "~~~~"){
                         v1.value = v1.value/((tildeInt) v2[v3.value]).value;
                     } else if(arg0 == "~~~~~"){
@@ -549,8 +560,12 @@ namespace ConsoleApplication{
                         ((tildeInt) v2[v3.value]).value -= v1.value;
                     } else if(arg0 == "~-~~~"){
                         ((tildeInt) v2[v3.value]).value *= v1.value;
+                    } else if(arg0 == "~-~~-~~~"){
+                        ((tildeInt) v2[v3.value]).value = (int) Math.Pow(((tildeInt) v2[v3.value]).value, v1.value);
                     } else if(arg0 == "~-~~~~"){
                         ((tildeInt) v2[v3.value]).value /= v1.value;
+                    } else if(arg0 == "~-~~-~~~~"){
+                        ((tildeInt) v2[v3.value]).value = (int) Math.Sqrt(((tildeInt) v2[v3.value]).value);
                     } else if(arg0 == "~-~~~~~"){
                         ((tildeInt) v2[v3.value]).value %= v1.value;
                     } else if(arg0 == "~-~~~~~~"){
