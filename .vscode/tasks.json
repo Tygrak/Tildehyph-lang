@@ -16,6 +16,8 @@
             "taskName": "run",
             "args": [
                 "test.~-",
+                "fizzbuzz.~-",
+                "test.~-",
                 "vocprosil.~-",
                 "helloworld.~-",
                 "bottles.~-"
