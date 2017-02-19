@@ -26,6 +26,7 @@ The command is ended by 4 hyphens. For example `~--~---~-------` sets variable "
 | ~~~~ | 3 (mode, var1, number/var2) | For/While. |
 | ~-~~~~ | 0 | Continue. |
 | ~~~~~ | 2 (mode, var) | Print. |
+| ~-~~~~~ | 3 (mode, var, file name) | Write into a file. |
 | ~~~~~~ | 2 (mode, var) | Input. |
 | ~-~~~~~~ | 3 (mode, var, file name) | Input from file. |
 | ~~~~~~~~ | 1 (mode) | Set print mode. |
@@ -79,6 +80,11 @@ Print variable.
 **~~~** : Print variable as a tildeValue.  
 **~~~~~** : Prints true if var is higher or equal to 1, prints false if var is equal to 0.  
 **~~~~~~** : Waits for 0.1 * variable value, then clear the console.  
+## ~-~~~~~
+Write into a textfile. The file has to end with .txt and has to have a name made from tildes and hyphens.  
+**~** : Writes a int into the textfile, if the variable is a list write the sum of the values of the list.  
+**~~** : Writes characters from a list as a list into the textfile, if the variable is a tildeInt write it as a char.  
+**~~~** : Writes a tildeValue of the variable into a textfile.  
 ## ~~~~~~
 Input into variable from stdin.  
 **~** : Inputs a int from stdin, if the variable is a list add the int to the list.  
@@ -116,9 +122,9 @@ TildeList mathematical operation.
 **~-~~-~~~~** : Sets list[index] to its square root. The var1 argument is useless but cant be omitted.  
 **~~~~~** : Sets var1 to var1%list[index].  
 **~-~~~~~** : Sets list[index] to list[index]%var1.  
-**~~~~~~** : Copies list[index] into var1.  
-**~-~~~~~~** : Copies var1 into list[index]. 
-**~~~~~~~** : If list[index] exists set var1 to 1 else set it to 0.
+**~~~~~~** : Copies list[index] into var1.   
+**~-~~~~~~** : Copies var1 into list[index].   
+**~~~~~~~** : If list[index] exists set var1 to 1 else set it to 0.   
 ## ~~~~~~~~
 Sets print mode.  
 **~** : Print now prints on seperate lines. This is the default mode.  
